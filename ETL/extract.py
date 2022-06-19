@@ -63,7 +63,9 @@ def run():
 
     end = time.time()
 
-    extract_log = f"Finished scraping in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss]"
+    extract_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
+                  f"Finished scraping {len(offers_df)} offers " \
+                  f"in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss]"
     print(extract_log)
     with open("etl.log", "a") as f:
         f.write(extract_log + '\n')
