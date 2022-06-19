@@ -4,8 +4,8 @@ import sqlite3
 
 def run():
     con = sqlite3.connect('dwh.db')
-    staging2_df = pd.read_csv('staging2.csv', index_col=0)
-    staging2_df.to_sql('dwh.db', con=con, if_exists='append')
+    staging2_df = pd.read_csv('staging.csv', index_col=0)
+    staging2_df.to_sql('dwh.db', con=con, if_exists='append', index=False)
     con.commit()
     con.close()
 

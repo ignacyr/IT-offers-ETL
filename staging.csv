@@ -1,0 +1,21 @@
+,title,skills,category,date,min_salary,max_salary,trainee,junior,mid,senior,expert
+0, Senior .NET Developer Backend ,['.net'],"['backend', '.net']",20220619,19950,28350,False,False,False,True,False
+1, .NET Developer - Remote ,"['.net', 'sql', 'c#', 'azure']","['fullstack', '.net']",20220619,23000,25000,False,False,True,False,False
+2, Site Reliability Engineer - Remote ,"['python', '.net']","['security', 'python']",20220619,20000,26000,False,False,False,True,False
+3, Senior Web Developer ,"['javascript', 'angular', 'vue.js']","['frontend', 'javascript']",20220619,13440,18480,False,False,False,True,False
+4, JS Full-stack Dev - new US Startup ,"['typescript', 'sql', 'javascript']","['fullstack', 'javascript']",20220619,22500,32500,False,False,True,True,False
+5, SAP B1 finance functional consultant ,[],['business analyst'],20220619,10000,14000,False,False,True,False,False
+6, Remote Senior Backend .NET Developer ,['.net'],"['backend', '.net']",20220619,16800,29568,False,False,False,True,False
+7, Data Scientist ,"['python', 'sql']","['ai', 'python']",20220619,18480,28560,False,False,False,True,False
+8, Senior Frontend Engineer ,['javascript'],"['frontend', 'javascript']",20220619,20000,25000,False,False,True,True,False
+9, Fullstack Developer ,"['javascript', 'react', 'sql']","['fullstack', 'javascript']",20220619,11157,20083,False,False,True,True,False
+10, Data Scientist ,"['sql', 'python']",['other'],20220619,37191,53927,False,False,True,False,False
+11, Back-End Engineer ,"['ruby', 'ruby on rails', 'elixir', 'typescript']","['backend', 'ruby on rails']",20220619,15000,30000,False,False,True,True,False
+12, Ops Expert ,['sql'],"['devops', 'python']",20220619,18480,21840,False,False,True,True,False
+13, Junior Ruby on Rails Developer 🤓 ,"['ruby on rails', 'sql']","['backend', 'ruby on rails']",20220619,6600,9630,False,True,False,False,False
+14, Junior Embedded C++ Developer ,['c++'],"['embedded', 'c++']",20220619,7100,10800,False,True,False,False,False
+15, Junior Java Developer ,['java'],"['backend', 'java']",20220619,7000,12000,False,True,False,False,False
+16, Junior IT Enterprise Architect ,['sql'],['business analyst'],20220619,7500,10000,False,True,False,False,False
+17, Junior C Developer ,['c'],"['embedded', 'c']",20220619,7100,10800,False,True,False,False,False
+18, Junior React Developer ,"['typescript', 'react']","['frontend', 'react']",20220619,5000,8000,False,True,False,False,False
+19, Junior Creative Designer ,[],['design'],20220619,4000,6000,False,True,False,False,False

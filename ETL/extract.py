@@ -5,6 +5,8 @@ import re
 import time
 import datetime
 
+only_first_page_for_test = True
+
 
 def run():
     url = "https://nofluffjobs.com/pl/backend?criteria=category%3Dfrontend,fullstack,mobile,testing,devops," \
@@ -41,13 +43,16 @@ def run():
             category = offer_soup.find("common-posting-cat-tech").find_all("span")[1].text
             print(category)
             offers_df.loc[len(offers_df)] = [title, salary, level, skills_list, category]
-        break
+
+        if only_first_page_for_test:  # for testing read only first page
+            break
+
         try:
             url = "https://nofluffjobs.com/" + soup.find("a", {"aria-label": "Next"}).get("href")
             page = requests.get(url)
             soup = BeautifulSoup(page.text, "lxml")
         except AttributeError:
-            break
+            break  # if last page then break
 
     date = datetime.datetime.now()
     date_str = date.strftime('%Y')+date.strftime('%m')+date.strftime('%d')
@@ -57,7 +62,7 @@ def run():
     offers_df.to_csv("staging.csv")
 
     end = time.time()
-    print(f"Finished scraping in {end - start} seconds.")
+    print(f"Finished scraping in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss].")
 
 
 if __name__ == '__main__':
