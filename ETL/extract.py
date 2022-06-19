@@ -62,7 +62,11 @@ def run():
     offers_df.to_csv("staging.csv")
 
     end = time.time()
-    print(f"Finished scraping in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss].")
+
+    extract_log = f"Finished scraping in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss]"
+    print(extract_log)
+    with open("etl.log", "a") as f:
+        f.write(extract_log + '\n')
 
 
 if __name__ == '__main__':
