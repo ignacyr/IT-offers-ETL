@@ -6,7 +6,7 @@ import time
 import datetime
 
 only_first_pages_for_test = True
-pages = 1
+pages = 10
 
 
 def run():

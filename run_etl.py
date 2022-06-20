@@ -3,11 +3,11 @@ import db_backup
 
 
 def main():
-    # extract.run()
-    # transform.run()
-    # load.run()
+    extract.run()
+    transform.run()
+    load.run()
+    db_backup.create()
     load_pg.run()
-    # db_backup.create()
 
 
 if __name__ == '__main__':

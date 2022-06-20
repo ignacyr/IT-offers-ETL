@@ -6,6 +6,7 @@ import datetime
 def column_load_log(column):
     date = datetime.datetime.now()
     column_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
+                 f"SQLite: " \
                  f"Added {column} column.++++++"
     print(column_log)
     with open("load.log", "a") as f:
@@ -15,6 +16,7 @@ def column_load_log(column):
 def record_load_log(n):
     date = datetime.datetime.now()
     record_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
+                 f"SQLite: " \
                  f"Added {n} offers.++++++"
     print(record_log)
     with open("load.log", "a") as f:
@@ -33,7 +35,7 @@ def run():
             con.execute(f"ALTER TABLE 'offers' ADD COLUMN '{column}' integer;")
             column_load_log(column)
         except sqlite3.OperationalError as error:
-            print(f"{error}: {column} is already in table ########################")
+            print(f"{error}: SQLite: {column} is already in a table.########################")
 
     staging_df.to_sql('offers', con=con, if_exists='append', index=False)
     record_load_log(len(staging_df))

@@ -27,6 +27,14 @@ def run():
     nofluffjobs_df['level'] = nofluffjobs_df['level'].str.split(', ', expand=False)
     nofluffjobs_df['category'] = nofluffjobs_df['category'].str.split(', ', expand=False)
 
+    def cleansing_titles(column: str):
+        for a in range(len(nofluffjobs_df)):
+            nofluffjobs_df[column][a] = nofluffjobs_df[column][a].strip().casefold()
+            nofluffjobs_df[column][a] = nofluffjobs_df[column][a].replace('.', '_').replace('+', 'p')
+
+    cleansing_titles('title')
+    cleansing_titles('company')
+
     def cleansing_str_list(column: str):
         for a in range(len(nofluffjobs_df)):
             if type(nofluffjobs_df[column][a]) is str:
@@ -39,10 +47,8 @@ def run():
                     nofluffjobs_df[column][a] = re.split(',| & ', concatenated)
                 if nofluffjobs_df[column][a][b].lower() == 'inne':
                     nofluffjobs_df[column][a][b] = 'other'
-                if nofluffjobs_df[column][a][b] == "c++":
-                    nofluffjobs_df[column][a][b] = "cpp"
-                if nofluffjobs_df[column][a][b] == "vue.js":
-                    nofluffjobs_df[column][a][b] = "vue_js"
+                nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('.', '_')\
+                    .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp')
 
     cleansing_str_list('level')
     cleansing_str_list('category')
