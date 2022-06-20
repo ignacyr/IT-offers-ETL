@@ -5,7 +5,7 @@ import re
 import time
 import datetime
 
-only_first_pages_for_test = True
+only_first_pages_for_test = False
 pages = 10
 
 

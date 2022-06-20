@@ -48,7 +48,7 @@ def run():
                 if nofluffjobs_df[column][a][b].lower() == 'inne':
                     nofluffjobs_df[column][a][b] = 'other'
                 nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('.', '_')\
-                    .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp')
+                    .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp').replace('&', '_')
 
     cleansing_str_list('level')
     cleansing_str_list('category')

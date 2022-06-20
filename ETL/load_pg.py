@@ -1,5 +1,4 @@
 import pandas as pd
-import datetime
 import psycopg2
 import sqlalchemy
 import datetime
@@ -53,13 +52,11 @@ def run():
             else:
                 conn.execute(f"ALTER TABLE offers ADD COLUMN {column} boolean;")
             column_load_log(column)
-            date = datetime.datetime.now()
         except psycopg2.OperationalError as error:
             print(f"Postgres: {column} is already in a table.########################")
         except sqlalchemy.exc.ProgrammingError as error:
             print(f"Postgres: {column} is already in a table.########################")
 
-    # staging_df.to_sql('offers', con=conn, if_exists='append', index=False)
     staging_df.to_sql(name='offers', con=conn, if_exists='append', index=False)
     record_load_log(len(staging_df))
 
