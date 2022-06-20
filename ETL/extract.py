@@ -6,7 +6,7 @@ import time
 import datetime
 
 only_first_pages_for_test = True
-pages = 3
+pages = 1
 
 
 def run():
@@ -21,34 +21,37 @@ def run():
 
     soup = BeautifulSoup(page.text, "lxml")
 
-    offers_df = pd.DataFrame(columns=["title", "salary", "level", "skills", "category", "company"])
+    offers_df = pd.DataFrame(columns=["title", "salary", "level", "skills", "category", "company", "link"])
 
     start = time.time()
     counter = 1
     while True:
         postings = soup.find_all("a", {"class": re.compile("posting-list-item")})
         for post in postings:
-            print(f"Offer {len(offers_df)}.")
-            link = "https://nofluffjobs.com/" + post.get("href")
-            print(link)
-            offer_page = requests.get(link)
-            offer_soup = BeautifulSoup(offer_page.text, "lxml")
-            title = offer_soup.find("h1").text
-            print(title)
-            salary = offer_soup.find("h4").text
-            print(salary)
-            level = offer_soup.find("span", {"class": "mr-10 font-weight-medium"}).text
-            print(level)
-            skills = offer_soup.find("h3").find_all("a")
-            skills_list = []
-            for s in skills:
-                skills_list.append(s.text)
-                print(s.text)
-            category = offer_soup.find("common-posting-cat-tech").find_all("span")[1].text
-            print(category)
-            company = offer_soup.find("a", {"id": "postingCompanyUrl"}).text
-            print(company)
-            offers_df.loc[len(offers_df)] = [title, salary, level, skills_list, category, company]
+            try:
+                print(f"Offer {len(offers_df)}.")
+                link = "https://nofluffjobs.com/" + post.get("href")
+                print(link)
+                offer_page = requests.get(link)
+                offer_soup = BeautifulSoup(offer_page.text, "lxml")
+                title = offer_soup.find("h1").text
+                print(title)
+                salary = offer_soup.find("h4").text
+                print(salary)
+                level = offer_soup.find("span", {"class": "mr-10 font-weight-medium"}).text
+                print(level)
+                skills = offer_soup.find("h3").find_all("a")
+                skills_list = []
+                for s in skills:
+                    skills_list.append(s.text)
+                    print(s.text)
+                category = offer_soup.find("common-posting-cat-tech").find_all("span")[1].text
+                print(category)
+                company = offer_soup.find("a", {"id": "postingCompanyUrl"}).text
+                print(company)
+                offers_df.loc[len(offers_df)] = [title, salary, level, skills_list, category, company, link]
+            except AttributeError as error:
+                print(error)
 
         if only_first_pages_for_test and counter == pages:  # for testing read only first page
             break

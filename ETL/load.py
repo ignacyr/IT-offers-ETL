@@ -32,8 +32,8 @@ def run():
         try:
             con.execute(f"ALTER TABLE 'offers' ADD COLUMN '{column}' integer;")
             column_load_log(column)
-        except sqlite3.OperationalError:
-            print(f"{column} is already in table ########################")
+        except sqlite3.OperationalError as error:
+            print(f"{error}: {column} is already in table ########################")
 
     staging_df.to_sql('offers', con=con, if_exists='append', index=False)
     record_load_log(len(staging_df))
