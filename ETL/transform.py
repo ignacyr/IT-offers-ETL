@@ -39,6 +39,10 @@ def run():
                     nofluffjobs_df[column][a] = re.split(',| & ', concatenated)
                 if nofluffjobs_df[column][a][b].lower() == 'inne':
                     nofluffjobs_df[column][a][b] = 'other'
+                if nofluffjobs_df[column][a][b] == "c++":
+                    nofluffjobs_df[column][a][b] = "cpp"
+                if nofluffjobs_df[column][a][b] == "vue.js":
+                    nofluffjobs_df[column][a][b] = "vue_js"
 
     cleansing_str_list('level')
     cleansing_str_list('category')
