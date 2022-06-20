@@ -57,18 +57,23 @@ def run():
         return set(pd.Series([x for _list in series for x in _list]))
 
     # unique_levels = unique(nofluffjobs_df['level'])
-    unique_categories = unique(nofluffjobs_df['category'])
+    # unique_categories = unique(nofluffjobs_df['category'])
     unique_skills = unique(nofluffjobs_df['skills'])
     unique_levels = ['trainee', 'junior', 'mid', 'senior', 'expert']
 
-    unique_skillsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['skills'])])
-    unique_catsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['category'])])
-    unique_levelsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['level'])])
+    # unique_skillsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['skills'])])
+    # unique_catsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['category'])])
+    # unique_levelsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['level'])])
 
     boolean_levels_df = to_boolean_df(nofluffjobs_df['level'], unique_levels)
-    nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_levels_df], axis=1)
+    boolean_skills_df = to_boolean_df(nofluffjobs_df['skills'], unique_skills)
+    # boolean_categories_df = to_boolean_df(nofluffjobs_df['category'], unique_categories)
 
-    del nofluffjobs_df['level']
+    nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_levels_df], axis=1)
+    nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_skills_df], axis=1)
+    # nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_categories_df], axis=1)
+
+    # del nofluffjobs_df['level']
 
     nofluffjobs_df['min_salary'] = nofluffjobs_df['min_salary'].astype(int)
     nofluffjobs_df['max_salary'] = nofluffjobs_df['max_salary'].astype(int)
