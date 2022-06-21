@@ -46,8 +46,7 @@ def run():
         try:
             if column in ("min_salary", "max_salary", "date"):
                 conn.execute(f"ALTER TABLE offers ADD COLUMN {column} integer;")
-            elif column in ("title", "level", "skills", "category", "company", "link",
-                            "trainee", "junior", "mid", "senior", "expert"):
+            elif column in ("title", "level", "skills", "category", "company", "link"):
                 conn.execute(f"ALTER TABLE offers ADD COLUMN {column} varchar;")
             else:
                 conn.execute(f"ALTER TABLE offers ADD COLUMN {column} boolean;")
