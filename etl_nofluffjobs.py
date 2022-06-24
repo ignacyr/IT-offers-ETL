@@ -8,19 +8,15 @@ import re
 import datetime
 import ast
 
-first_page_url = "https://nofluffjobs.com/pl/backend?criteria=category%3Dfrontend,fullstack,mobile,testing," \
-                 "devops,embedded,security,gaming,artificial-intelligence,big-data,support,it-administrator," \
-                 "agile,product-management,project-manager,business-intelligence,business-analyst,ux,sales," \
-                 "marketing,backoffice,hr,other&page=1"
-passwd_path = "/home/ignacyr/Desktop/password_app_user"
-
 
 class ETLnofluffjobs:
-    def __init__(self, first_url: str, password_path: str, test_pages=1, is_that_test=True):
+    def __init__(self, first_url: str, password_path: str, db_url: str, test_pages=1, is_that_test=True):
         self.test = is_that_test
         self.test_pages = test_pages
         self.url = first_url
         self.password_path = password_path
+        self.db_url = db_url
+        logging.basicConfig(filename='etl.log', level=logging.INFO, format='%(asctime)s:%(levelname)s: %(message)s')
 
     def __extract(self):
         logging.info(f"Started extracting nofluffjobs.com offers.")
@@ -149,8 +145,7 @@ class ETLnofluffjobs:
         with open(self.password_path) as f:
             password_app_user = f.readline().strip()
 
-        conn = sqlalchemy.create_engine(
-            f'postgresql://app_user:{password_app_user}@it-offers.c9umk0ew1r8h.us-east-1.rds.amazonaws.com:5432/dwh')
+        conn = sqlalchemy.create_engine(url=self.db_url)
 
         conn.execute("CREATE TABLE IF NOT EXISTS offers (id serial primary key);")
 
@@ -182,7 +177,3 @@ class ETLnofluffjobs:
         self.__load()
 
 
-if __name__ == "__main__":
-    logging.basicConfig(filename='etl.log', level=logging.INFO, format='%(asctime)s:%(levelname)s: %(message)s')
-    etl_job = ETLnofluffjobs(first_url=first_page_url, password_path=passwd_path, test_pages=1, is_that_test=True)
-    etl_job.run()
