@@ -6,9 +6,6 @@ import re
 def run():
     nofluffjobs_df = pd.read_csv("staging.csv", index_col=0)
 
-    # nofluffjobs_df_old = nofluffjobs_df
-    # nofluffjobs_df_old['skills'] = nofluffjobs_df_old['skills'].str.cat(sep=',')
-
     nofluffjobs_df[["min_salary", "max_salary"]] = nofluffjobs_df['salary'].str.split('-', expand=True)
 
     nofluffjobs_df['min_salary'] = nofluffjobs_df['min_salary'].astype('str').str.extractall('(\d+)').unstack().fillna('').sum(axis=1).astype(int)
@@ -66,24 +63,14 @@ def run():
     def unique(series):
         return set(pd.Series([x for _list in series for x in _list]))
 
-    # unique_levels = unique(nofluffjobs_df['level'])
-    # unique_categories = unique(nofluffjobs_df['category'])
     unique_skills = unique(nofluffjobs_df['skills'])
     unique_levels = ['trainee', 'junior', 'mid', 'senior', 'expert']
 
-    # unique_skillsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['skills'])])
-    # unique_catsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['category'])])
-    # unique_levelsets = pd.Series([list(x) for x in set(tuple(x) for x in nofluffjobs_df['level'])])
-
     boolean_levels_df = to_boolean_df(nofluffjobs_df['level'], unique_levels)
     boolean_skills_df = to_boolean_df(nofluffjobs_df['skills'], unique_skills)
-    # boolean_categories_df = to_boolean_df(nofluffjobs_df['category'], unique_categories)
 
     nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_levels_df], axis=1)
     nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_skills_df], axis=1)
-    # nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_categories_df], axis=1)
-
-    # del nofluffjobs_df['level']
 
     nofluffjobs_df['min_salary'] = nofluffjobs_df['min_salary'].astype(int)
     nofluffjobs_df['max_salary'] = nofluffjobs_df['max_salary'].astype(int)
@@ -91,11 +78,6 @@ def run():
     nofluffjobs_df['skills'] = nofluffjobs_df['skills'].astype(str)
 
     nofluffjobs_df.to_csv('staging.csv')
-
-    # first query
-    # nofluffjobs_df[['min_salary', 'skills']].groupby("skills").mean().sort_values("min_salary", ascending=False).head(10)
-
-    # Creating dimensions for unique skillsets and unique categoriesets would be cool
 
 
 if __name__ == '__main__':

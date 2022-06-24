@@ -10,11 +10,6 @@ pages = 10
 
 
 def run():
-    # url = "https://nofluffjobs.com/pl/backend?criteria=category%3Dfrontend,fullstack,mobile,testing,devops," \
-    #       "embedded,security,gaming,artificial-intelligence,big-data,support,it-administrator,agile," \
-    #       "product-management,project-manager,business-intelligence,business-analyst,ux,sales,marketing," \
-    #       "backoffice,hr,other&page=1"
-
     url = "https://nofluffjobs.com/pl/backend?criteria=category%3Dfrontend,fullstack,mobile,testing,devops,embedded,security,gaming,artificial-intelligence,big-data,support,it-administrator,agile,product-management,project-manager,business-intelligence,business-analyst,ux,sales,marketing,backoffice,hr,other&page=1"
 
     page = requests.get(url)

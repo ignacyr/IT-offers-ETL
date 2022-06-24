@@ -29,14 +29,6 @@ def run():
     conn = sqlalchemy.create_engine(
         f'postgresql://app_user:{password_app_user}@it-offers.c9umk0ew1r8h.us-east-1.rds.amazonaws.com:5432/dwh')
 
-    # conn = psycopg2.connect(
-    #     dbname="dwh",
-    #     user="app_user",
-    #     host="it-offers.c9umk0ew1r8h.us-east-1.rds.amazonaws.com",
-    #     password=password_app_user
-    # )
-
-    # cur = conn.cursor()
     conn.execute("CREATE TABLE IF NOT EXISTS offers (id serial primary key);")
     staging_df = pd.read_csv('staging.csv', index_col=0)
 
