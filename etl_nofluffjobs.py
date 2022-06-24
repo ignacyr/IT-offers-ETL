@@ -1,5 +1,4 @@
 import logging
-import psycopg2
 import sqlalchemy
 from bs4 import BeautifulSoup
 import requests
@@ -10,11 +9,10 @@ import ast
 
 
 class ETLnofluffjobs:
-    def __init__(self, first_url: str, password_path: str, db_url: str, test_pages=1, is_that_test=True):
+    def __init__(self, first_url: str, db_url: str, test_pages=1, is_that_test=True):
         self.test = is_that_test
         self.test_pages = test_pages
         self.url = first_url
-        self.password_path = password_path
         self.db_url = db_url
         logging.basicConfig(filename='etl.log', level=logging.INFO, format='%(asctime)s:%(levelname)s: %(message)s')
 
@@ -133,43 +131,9 @@ class ETLnofluffjobs:
 
     def __load(self):
         logging.info(f"Started loading nofluffjobs.com offers.")
-
-        def column_load_log(col):
-            date = datetime.datetime.now()
-            column_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
-                         f"Postgres: Added {col} column.++++++"
-            print(column_log)
-            with open("load.log", "a") as file:
-                file.write(column_log + '\n')
-
-        with open(self.password_path) as f:
-            password_app_user = f.readline().strip()
-
         conn = sqlalchemy.create_engine(url=self.db_url)
-
-        conn.execute("CREATE TABLE IF NOT EXISTS offers (id serial primary key);")
-
-        clean_nofluffjobs_df = self.clean_nofluffjobs_df
-
-        schema_list = list(clean_nofluffjobs_df.columns)
-
-        for column in schema_list:
-            try:
-                if column in ("min_salary", "max_salary", "date"):
-                    conn.execute(f"ALTER TABLE offers ADD COLUMN {column} integer;")
-                elif column in ("title", "level", "skills", "category", "company", "link"):
-                    conn.execute(f"ALTER TABLE offers ADD COLUMN {column} varchar;")
-                else:
-                    conn.execute(f"ALTER TABLE offers ADD COLUMN {column} boolean;")
-                column_load_log(column)
-            except psycopg2.OperationalError as error:
-                print(f"Postgres: {column} is already in a table.########################")
-            except sqlalchemy.exc.ProgrammingError as error:
-                print(f"Postgres: {column} is already in a table.########################")
-
-        clean_nofluffjobs_df.to_sql(name='offers', con=conn, if_exists='append', index=False)
-
-        logging.info(f"Loaded {len(clean_nofluffjobs_df)} nofluffjobs.com offers to a database.")
+        self.clean_nofluffjobs_df.to_sql(name='offers', con=conn, if_exists='append', index=False)
+        logging.info(f"Loaded {len(self.clean_nofluffjobs_df)} nofluffjobs.com offers to a database.")
 
     def run(self):
         self.__extract()
