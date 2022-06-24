@@ -1,10 +1,10 @@
+import logging
 import psycopg2
 import sqlalchemy
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import re
-import time
 import datetime
 import ast
 
@@ -22,14 +22,14 @@ class ETLnofluffjobs:
         self.url = first_url
         self.password_path = password_path
 
-    def extract(self):
+    def __extract(self):
+        logging.info(f"Started extracting nofluffjobs.com offers.")
         page = requests.get(self.url)
 
         soup = BeautifulSoup(page.text, "lxml")
 
         offers_df = pd.DataFrame(columns=["title", "salary", "level", "skills", "category", "company", "link"])
 
-        start = time.time()
         counter = 1
         while True:
             postings = soup.find_all("a", {"class": re.compile("posting-list-item")})
@@ -37,24 +37,17 @@ class ETLnofluffjobs:
                 try:
                     print(f"Offer {len(offers_df)}.")
                     link = "https://nofluffjobs.com/" + post.get("href")
-                    print(link)
                     offer_page = requests.get(link)
                     offer_soup = BeautifulSoup(offer_page.text, "lxml")
                     title = offer_soup.find("h1").text
-                    print(title)
                     salary = offer_soup.find("h4").text
-                    print(salary)
                     level = offer_soup.find("span", {"class": "mr-10 font-weight-medium"}).text
-                    print(level)
                     skills = offer_soup.find("h3").find_all("a")
                     skills_list = []
                     for s in skills:
                         skills_list.append(s.text)
-                        print(s.text)
                     category = offer_soup.find("common-posting-cat-tech").find_all("span")[1].text
-                    print(category)
                     company = offer_soup.find("a", {"id": "postingCompanyUrl"}).text
-                    print(company)
                     offers_df.loc[len(offers_df)] = [title, salary, level, skills_list, category, company, link]
                 except AttributeError as error:
                     print(error)
@@ -78,19 +71,13 @@ class ETLnofluffjobs:
         else:
             offers_df['date'] = date_int
 
-        offers_df.to_csv("raw-nofluffjobs.csv")
+        self.raw_nofluffjobs_df = offers_df
 
-        end = time.time()
+        logging.info(f"Finished extracting {len(offers_df)} nofluffjobs.com offers.")
 
-        extract_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
-                      f"Finished scraping {len(offers_df)} offers " \
-                      f"in {datetime.timedelta(seconds=(round(end - start)))} [hh:mm:ss]"
-        print(extract_log)
-        with open("extract.log", "a") as f:
-            f.write(extract_log + '\n')
-
-    def transform(self):
-        nofluffjobs_df = pd.read_csv("raw-nofluffjobs.csv", index_col=0)
+    def __transform(self):
+        logging.info(f"Started transforming nofluffjobs.com offers.")
+        nofluffjobs_df = self.raw_nofluffjobs_df
 
         nofluffjobs_df[["min_salary", "max_salary"]] = nofluffjobs_df['salary'].str.split('-', expand=True)
 
@@ -132,8 +119,7 @@ class ETLnofluffjobs:
                         nofluffjobs_df[column][a] = re.split(',| & ', concatenated)
                     if nofluffjobs_df[column][a][b].lower() == 'inne':
                         nofluffjobs_df[column][a][b] = 'other'
-                    # nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('.', '_')\
-                    #     .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp').replace('&', '_')
+                    nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('"', '')
 
         cleansing_str_list('level')
         cleansing_str_list('category')
@@ -142,11 +128,16 @@ class ETLnofluffjobs:
         nofluffjobs_df['min_salary'] = nofluffjobs_df['min_salary'].astype(int)
         nofluffjobs_df['max_salary'] = nofluffjobs_df['max_salary'].astype(int)
 
+        nofluffjobs_df['level'] = nofluffjobs_df['level'].astype(str)
+        nofluffjobs_df['category'] = nofluffjobs_df['category'].astype(str)
         nofluffjobs_df['skills'] = nofluffjobs_df['skills'].astype(str)
 
-        nofluffjobs_df.to_csv('clean-nofluffjobs.csv')
+        self.clean_nofluffjobs_df = nofluffjobs_df
+        logging.info(f"Finished transforming nofluffjobs.com offers.")
 
-    def load(self):
+    def __load(self):
+        logging.info(f"Started loading nofluffjobs.com offers.")
+
         def column_load_log(col):
             date = datetime.datetime.now()
             column_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
@@ -155,14 +146,6 @@ class ETLnofluffjobs:
             with open("load.log", "a") as file:
                 file.write(column_log + '\n')
 
-        def record_load_log(n):
-            date = datetime.datetime.now()
-            record_log = f"{date.strftime('%x')} - {date.strftime('%X')}: " \
-                         f"Postgres: Added {n} offers.++++++"
-            print(record_log)
-            with open("load.log", "a") as file:
-                file.write(record_log + '\n')
-
         with open(self.password_path) as f:
             password_app_user = f.readline().strip()
 
@@ -170,7 +153,8 @@ class ETLnofluffjobs:
             f'postgresql://app_user:{password_app_user}@it-offers.c9umk0ew1r8h.us-east-1.rds.amazonaws.com:5432/dwh')
 
         conn.execute("CREATE TABLE IF NOT EXISTS offers (id serial primary key);")
-        clean_nofluffjobs_df = pd.read_csv('clean-nofluffjobs.csv', index_col=0)
+
+        clean_nofluffjobs_df = self.clean_nofluffjobs_df
 
         schema_list = list(clean_nofluffjobs_df.columns)
 
@@ -189,14 +173,16 @@ class ETLnofluffjobs:
                 print(f"Postgres: {column} is already in a table.########################")
 
         clean_nofluffjobs_df.to_sql(name='offers', con=conn, if_exists='append', index=False)
-        record_load_log(len(clean_nofluffjobs_df))
+
+        logging.info(f"Loaded {len(clean_nofluffjobs_df)} nofluffjobs.com offers to a database.")
 
     def run(self):
-        self.extract()
-        self.transform()
-        self.load()
+        self.__extract()
+        self.__transform()
+        self.__load()
 
 
 if __name__ == "__main__":
+    logging.basicConfig(filename='etl.log', level=logging.INFO, format='%(asctime)s:%(levelname)s: %(message)s')
     etl_job = ETLnofluffjobs(first_url=first_page_url, password_path=passwd_path, test_pages=1, is_that_test=True)
     etl_job.run()

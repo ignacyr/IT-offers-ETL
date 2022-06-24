@@ -1,0 +1,6 @@
+2022-06-24 22:45:33,113:INFO: Started extracting nofluffjobs.com offers.
+2022-06-24 22:45:50,085:INFO: Finished extracting 20 nofluffjobs.com offers.
+2022-06-24 22:45:50,085:INFO: Started transforming nofluffjobs.com offers.
+2022-06-24 22:45:50,139:INFO: Finished transforming nofluffjobs.com offers.
+2022-06-24 22:45:50,139:INFO: Started loading nofluffjobs.com offers.
+2022-06-24 22:45:55,816:INFO: Loaded 20 nofluffjobs.com offers to a database.
