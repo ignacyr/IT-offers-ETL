@@ -4,7 +4,7 @@ import re
 
 
 def run():
-    nofluffjobs_df = pd.read_csv("staging.csv", index_col=0)
+    nofluffjobs_df = pd.read_csv("raw-nofluffjobs.csv", index_col=0)
 
     nofluffjobs_df[["min_salary", "max_salary"]] = nofluffjobs_df['salary'].str.split('-', expand=True)
 
@@ -77,7 +77,7 @@ def run():
 
     nofluffjobs_df['skills'] = nofluffjobs_df['skills'].astype(str)
 
-    nofluffjobs_df.to_csv('staging.csv')
+    nofluffjobs_df.to_csv('clean-nofluffjobs.csv')
 
 
 if __name__ == '__main__':

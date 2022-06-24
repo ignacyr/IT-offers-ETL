@@ -30,7 +30,7 @@ def run():
         f'postgresql://app_user:{password_app_user}@it-offers.c9umk0ew1r8h.us-east-1.rds.amazonaws.com:5432/dwh')
 
     conn.execute("CREATE TABLE IF NOT EXISTS offers (id serial primary key);")
-    staging_df = pd.read_csv('staging.csv', index_col=0)
+    staging_df = pd.read_csv('clean-nofluffjobs.csv', index_col=0)
 
     schema_list = list(staging_df.columns)
 

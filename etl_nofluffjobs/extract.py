@@ -64,7 +64,7 @@ def run():
     date_int = int(date_str)
     offers_df['date'] = date_int
     print(offers_df)
-    offers_df.to_csv("staging.csv")
+    offers_df.to_csv("raw-nofluffjobs.csv")
 
     end = time.time()
 
