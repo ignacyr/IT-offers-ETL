@@ -6,7 +6,7 @@ import time
 import datetime
 
 only_first_pages_for_test = True
-test_pages = 10
+test_pages = 3
 test_date = True
 
 

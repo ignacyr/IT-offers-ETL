@@ -26,8 +26,8 @@ def run():
 
     def cleansing_titles(column: str):
         for a in range(len(nofluffjobs_df)):
-            nofluffjobs_df[column][a] = nofluffjobs_df[column][a].strip().casefold()
-            nofluffjobs_df[column][a] = nofluffjobs_df[column][a].replace('.', '_').replace('+', 'p')
+            nofluffjobs_df[column][a] = nofluffjobs_df[column][a].strip()  # .casefold()
+            # nofluffjobs_df[column][a] = nofluffjobs_df[column][a].replace('.', '_').replace('+', 'p')
 
     cleansing_titles('title')
     cleansing_titles('company')
@@ -44,33 +44,12 @@ def run():
                     nofluffjobs_df[column][a] = re.split(',| & ', concatenated)
                 if nofluffjobs_df[column][a][b].lower() == 'inne':
                     nofluffjobs_df[column][a][b] = 'other'
-                nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('.', '_')\
-                    .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp').replace('&', '_')
+                # nofluffjobs_df[column][a][b] = nofluffjobs_df[column][a][b].replace('.', '_')\
+                #     .replace('+', 'p').replace(' ', '_').replace('c#', 'c_sharp').replace('&', '_')
 
     cleansing_str_list('level')
     cleansing_str_list('category')
     cleansing_str_list('skills')
-
-    def to_boolean_df(item_lists, unique_items):
-        bool_dict = {}
-
-        for item in unique_items:
-            bool_dict[item] = item_lists.apply(lambda x: item in x)
-
-        return pd.DataFrame(bool_dict)
-
-    # Unique items in column of lists
-    def unique(series):
-        return set(pd.Series([x for _list in series for x in _list]))
-
-    unique_skills = unique(nofluffjobs_df['skills'])
-    unique_levels = ['trainee', 'junior', 'mid', 'senior', 'expert']
-
-    boolean_levels_df = to_boolean_df(nofluffjobs_df['level'], unique_levels)
-    boolean_skills_df = to_boolean_df(nofluffjobs_df['skills'], unique_skills)
-
-    nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_levels_df], axis=1)
-    nofluffjobs_df = pd.concat([nofluffjobs_df, boolean_skills_df], axis=1)
 
     nofluffjobs_df['min_salary'] = nofluffjobs_df['min_salary'].astype(int)
     nofluffjobs_df['max_salary'] = nofluffjobs_df['max_salary'].astype(int)
