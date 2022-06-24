@@ -1,4 +1,4 @@
-from etl_nofluffjobs import extract, transform, load
+from etlnofluffjobs import extract, transform, load
 
 
 def main():

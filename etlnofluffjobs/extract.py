@@ -5,8 +5,9 @@ import re
 import time
 import datetime
 
-only_first_pages_for_test = False
-pages = 10
+only_first_pages_for_test = True
+test_pages = 10
+test_date = True
 
 
 def run():
@@ -48,7 +49,7 @@ def run():
             except AttributeError as error:
                 print(error)
 
-        if only_first_pages_for_test and counter == pages:  # for testing read only first page
+        if only_first_pages_for_test and counter == test_pages:  # for testing read only first page
             break
         counter += 1
 
@@ -62,8 +63,11 @@ def run():
     date = datetime.datetime.now()
     date_str = date.strftime('%Y')+date.strftime('%m')+date.strftime('%d')
     date_int = int(date_str)
-    offers_df['date'] = date_int
-    print(offers_df)
+    if test_date:
+        offers_df['date'] = 99999999
+    else:
+        offers_df['date'] = date_int
+
     offers_df.to_csv("raw-nofluffjobs.csv")
 
     end = time.time()
