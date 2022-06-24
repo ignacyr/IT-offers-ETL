@@ -16,7 +16,7 @@ passwd_path = "/home/ignacyr/Desktop/password_app_user"
 
 
 class ETLnofluffjobs:
-    def __init__(self, first_url: str, test_pages: int, password_path: str, is_that_test=True):
+    def __init__(self, first_url: str, password_path: str, test_pages=1, is_that_test=True):
         self.test = is_that_test
         self.test_pages = test_pages
         self.url = first_url
@@ -198,5 +198,5 @@ class ETLnofluffjobs:
 
 
 if __name__ == "__main__":
-    etl_job = ETLnofluffjobs(first_url=first_page_url, test_pages=1, password_path=passwd_path)
+    etl_job = ETLnofluffjobs(first_url=first_page_url, password_path=passwd_path, test_pages=1, is_that_test=True)
     etl_job.run()
